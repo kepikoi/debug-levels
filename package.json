@@ -11,14 +11,15 @@
     "url": "https://github.com/kepikoi/debug-levels"
   },
   "keywords": [
-    "debug"
+    "debug",
+    "debug-levels"
   ],
-  "author": "Eugene Song <tilleps@gmail.com>",
+  "author": "Alec Utin",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/tilleps/debug-levels/issues"
+    "url": "https://github.com/kepikoi/debug-levels/pulls"
   },
-  "homepage": "https://github.com/tilleps/debug-levels",
+  "homepage": "https://github.com/kepikoi/debug-levels",
   "dependencies": {
     "debug": "^2.1.0"
   }

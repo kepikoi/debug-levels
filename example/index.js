@@ -5,18 +5,19 @@
 const levels = require('..').levels;
 const debug = require('..')('debug:example');
 
-debug('first');
+debug('first')
+    .then(()=>debug('...second'));
 
 debug
     .log('log!')
-    .then(_ => debug('log callback'));
+    .then(_ => debug('...log callback'));
 debug.error('error!');
 debug.warn('warn!')
-    .then(args => debug('warn callback', args));
+    .then(args => debug('...warn callback', args));
 debug.debug('debug!');
 debug
     .info('info!')
-    .then(_ => debug('info callback'));
+    .then(_ => debug('...info callback'));
 debug.verbose('verbose!');
 
 

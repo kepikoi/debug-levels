@@ -18,28 +18,24 @@ assert.ok(logLevels.some(l => l === logLevel), `DEBUG_LEVEL ${logLevel} not allo
 const allowedLevels = logLevels.slice(0, logLevels.indexOf(logLevel) + 1);
 
 /**
- * Create Debug-level supported debug
- *
- * @param {String} namespace
- * @return {Object}
+ * create Debug-level supported debug
+ * @param {String} namespace - debugging namespace for debug module
  */
 module.exports = namespace => {
     //basic debug() call
     const callDebug = function () {
-        debug(namespace).apply(null, arguments)
+        //sync call
+        debug(namespace).apply(null, arguments);
+        // return thenable promise
+        return Promise.resolve(arguments);
     };
     //leveled debug call e.g. debug.warn() etc
     logLevels.map(level => {
         const isAllowed = ~allowedLevels.indexOf(level);
         callDebug[level] = isAllowed ?
-            function () {
-                //call debug
-                callDebug.apply(null, arguments);
-                // return promise
-                return Promise.resolve(arguments)
-            } :
+            function(){ return callDebug.apply(null, arguments) } :
             () => ({
-                //Promise mock
+                //Promise mock. Callback won't be fired
                 then() {
                     return null
                 }
@@ -50,6 +46,4 @@ module.exports = namespace => {
     return callDebug;
 };
 
-
-//  Export available levels
 module.exports.levels = logLevels;
