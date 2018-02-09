@@ -1,6 +1,6 @@
 {
   "name": "debug-levels-promise",
-  "version": "0.2.0",
+  "version": "0.0.0",
   "description": "Eugene Song's debug-levels with a thenable callback",
   "main": "index.js",
   "scripts": {
@@ -14,7 +14,7 @@
     "debug",
     "debug-levels"
   ],
-  "author": "Alec Utin",
+  "author": "Alec Utin <kepi@binks.rocks>",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/kepikoi/debug-levels/pulls"
