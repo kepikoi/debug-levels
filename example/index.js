@@ -1,24 +1,24 @@
 /**
- *
- *
- * DEBUG=* node example/index.js 
- * DEBUG=* DEBUG_LEVEL=error node example/index.js
- */
-var levels = require('..').levels;
-var debug = require('..')('debug:example');
-
+* DEBUG=* node example/index.js
+* DEBUG=* DEBUG_LEVEL=error node example/index.js
+*/
+const levels = require('..').levels;
+const debug = require('..')('debug:example');
 
 debug('first');
 
-debug.log('log!');
+debug
+    .log('log!')
+    .then(_ => debug('log callback'));
 debug.error('error!');
-debug.warn('warn!');
+debug.warn('warn!')
+    .then(args => debug('warn callback', args));
 debug.debug('debug!');
-debug.info('info!');
+debug
+    .info('info!')
+    .then(_ => debug('info callback'));
 debug.verbose('verbose!');
 
 
-//
 //  Display list of available levels
-//
-console.log('debug levels:', levels);
+// console.log('debug levels:', levels);

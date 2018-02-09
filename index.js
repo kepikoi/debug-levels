@@ -1,69 +1,55 @@
-var debug = require('debug');
+const
+    debug = require('debug')
+    , assert = require('assert')
+    , logLevel = process.env.DEBUG_LEVEL || 'verbose'
+    , logLevels = [
+        'log',
+        'error',
+        'warn',
+        'debug',
+        'info',
+        'verbose'
+    ]
+;
+// check supported levels
+assert.ok(logLevels.some(l => l === logLevel), `DEBUG_LEVEL ${logLevel} not allowed. Use one of these for process.env.DEBUG_LEVEL: ${logLevels.join(', ')}`);
 
-var logLevel = process.env.DEBUG_LEVEL || 'verbose';
-var logLevels = [
-  'log',
-  'error',
-  'warn',
-  'debug',
-  'info',
-  'verbose'
-];
-
-
-//
-//  Empty function
-//
-function emptyFunction() {
-  return function () {};
-}
-
-
-//
-//  Check supported levels
-//
-var key = logLevels.indexOf(logLevel);
-
-if (key == -1) {
-  //  not in allowed levels
-  var msg = 'Log level found in allowed levels';
-  throw new Error(msg);
-}
-
-
-//
-//  Create a list of allowed levels
-//
-var allowedLevels = logLevels.slice(0, key + 1);
-
+//  create a list of allowed levels
+const allowedLevels = logLevels.slice(0, logLevels.indexOf(logLevel) + 1);
 
 /**
  * Create Debug-level supported debug
- * 
+ *
  * @param {String} namespace
  * @return {Object}
  */
-module.exports = function (namespace) {
-  
-  var obj = function () {
-    return debug(namespace).apply(null, arguments);
-  };
-  for (i in logLevels) {
-    
-    var logLevel = logLevels[i];    
-    var allowedLevel = allowedLevels.indexOf(logLevel) > -1;
-    
-    obj[logLevel] = allowedLevel 
-      ? debug(namespace)
-      : emptyFunction;
+module.exports = namespace => {
+    //basic debug() call
+    const callDebug = function () {
+        debug(namespace).apply(null, arguments)
+    };
+    //leveled debug call e.g. debug.warn() etc
+    logLevels.map(level => {
+        const isAllowed = ~allowedLevels.indexOf(level);
+        callDebug[level] = isAllowed ?
+            function () {
+                //call debug
+                callDebug.apply(null, arguments);
+                // return promise
+                return Promise.resolve(arguments)
+            } :
+            () => ({
+                //Promise mock
+                then() {
+                    return null
+                }
+            })
+        ;
+    });
 
-  }
-  
-  return obj;
-}
+    return callDebug;
+};
 
 
-//
 //  Export available levels
-//
 module.exports.levels = logLevels;
