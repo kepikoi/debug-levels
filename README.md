@@ -1,58 +1,48 @@
 debug-levels
 ============
 
-Debug/verbosity level support for Visionmedia's debug module.  See https://github.com/visionmedia/debug for debug module usage information.
+Although [debug-levels](https://www.npmjs.com/package/debug-levels) is not async and thus doesn't need to be promisified, 
+I wanted to be able to callback only when a certain debug level applies and decided to use the Promise notion.
 
 ## Installation:
 ```bash
-npm install debug-levels
+npm install debug-levels-promise
 ```
-
-## List of available levels:
-```javascript
-var levels = require('debug-levels').levels;
-
-//  [ 'log', 'error', 'warn', 'debug', 'info', 'verbose' ]
-```
-
- - log
- - error
- - warn
- - debug
- - info
- - verbose (default)
-
 
 ## Example Usage:
 
-Display "error" and "log" debug level messages
-```bash
-$ DEBUG=* DEBUG_LEVEL=error node index.js
-```
-
 ```javascript
-var debug = require('debug-levels')('example');
+// Using DEBUG=*;DEBUG_LEVEL=debug
+const debug = require('debug-levels-promise')('example');
 
-// Retain original debug module usage
-debug('doing some work');
+debug('first')
+    .then(()=>debug('...second'));
 
-// Display when using levels: log, error, warn, debug, info, and verbose
-debug.log('debug.log()');
+debug
+    .log('log!')
+    .then(() => debug('...log callback'));
 
-// Display when using levels: error, warn, debug, info, and verbose
-debug.error('debug.error()');
+debug.error('error!');
 
-// Display when using levels: warn, debug, info, and verbose
-debug.warn('debug.warn()');
+debug.warn('warn!')
+    .then(args => debug('...warn callback', args));
 
-// Display when using levels: debug, info, and verbose
-debug.debug('debug.debug()');
+debug.debug('debug!'); //debug level threshold
 
-// Display when using levels: info and verbose
-debug.info('debug.info()');
+debug
+    .info('info!')
+    .then(_ => debug('...info callback')); //won't fire
 
-// Display when using levels: verbose
-debug.verbose('debug.verbose()');
+debug.verbose('verbose!');
+
+// debug:example first +0ms
+// debug:example log! +1ms
+// debug:example error! +0ms
+// debug:example warn! +0ms
+// debug:example debug! +0ms
+// debug:example ...second +1ms
+// debug:example ...log callback +0ms
+// debug:example ...warn callback { '0': 'warn!' } +0ms
 ```
 
 

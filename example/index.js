@@ -11,13 +11,18 @@ debug('first')
 debug
     .log('log!')
     .then(_ => debug('...log callback'));
+
 debug.error('error!');
+
 debug.warn('warn!')
     .then(args => debug('...warn callback', args));
+
 debug.debug('debug!');
+
 debug
     .info('info!')
     .then(_ => debug('...info callback'));
+
 debug.verbose('verbose!');
 
 
